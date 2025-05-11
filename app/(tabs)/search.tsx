@@ -3,27 +3,36 @@ import SearchBar from '@/components/SearchBar'
 import { icons } from '@/constants/icons'
 import { images } from '@/constants/images'
 import { fetchMovies } from '@/services/api'
+import { updateSearchCount } from '@/services/appwrite'
 import useFetch from '@/services/useFetch'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, Text, View } from 'react-native'
+
+
 
 const Search = () => {
     const [searchQuery, setSearchQuery] = useState("")
 
 
     const {
-    data: movies, 
-    loading: moviesLoading, 
-    error: moviesError,
-    refetch: loadMovies,
-    reset
+      data: movies, 
+      loading: moviesLoading, 
+      error: moviesError, 
+      refetch: loadMovies,
+      reset
     } = useFetch(() => fetchMovies({query: searchQuery}), false)
     
 
     useEffect(() => {
+
       const timeoutId =  setTimeout( async () => {
         if(searchQuery.trim()) {
-          await loadMovies()        
+          await loadMovies()  
+          console.log("Loadded movies")
+          // if(movies.length > 0 && movies[0] ){
+          //   console.log("updateSearchCount")
+          //   await updateSearchCount(searchQuery, movies[0]);
+          // }
         } else {
           reset()
         }
@@ -32,6 +41,18 @@ const Search = () => {
 
       return () => clearTimeout(timeoutId)
     }, [searchQuery])
+
+    useEffect(() => {
+
+      async function handleUpdateSearchCount(){
+       if(movies && movies.length > 0 && movies[0] ){
+            console.log("updateSearchCount")
+            await updateSearchCount(searchQuery, movies[0]);
+          }}
+        
+      handleUpdateSearchCount()
+    }, [movies])
+
 
 
   return (
