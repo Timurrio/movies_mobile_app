@@ -7,7 +7,7 @@ import { fetchMovies } from "@/services/api";
 import { getTrendingMovies } from "@/services/appwrite";
 import useFetch from "@/services/useFetch";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, FlatList, Image, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
   const router = useRouter();
@@ -41,10 +41,13 @@ export default function Index() {
                 <Text>Error: {moviesError?.message || trendingError?.message}</Text>
               ) : (                
                 <View className="flex-1 mt-5">
+                                    
+                <TouchableOpacity onPress={() => router.push("/search")} >
                   <SearchBar
-                    onPress={() => router.push("/search")}
                     placeholder="Search for a movie"
+                    isEditable={false}
                   />
+                </TouchableOpacity>
 
                   {
                     trendingMovies && (
